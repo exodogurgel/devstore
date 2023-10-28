@@ -4,7 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 async function getFeaturedProducts(): Promise<Product[]> {
-  const response = await api('/products/featured')
+  const response = await api('/products/featured', {
+    next: {
+      revalidate: 60 * 60, // 60 minutes
+    },
+  })
 
   const products = await response.json()
 
@@ -12,7 +16,6 @@ async function getFeaturedProducts(): Promise<Product[]> {
 }
 
 export default async function Home() {
-  await new Promise((resolve) => setTimeout(resolve, 2000))
   const [highlightedProduct, ...otherProducts] = await getFeaturedProducts()
 
   return (
